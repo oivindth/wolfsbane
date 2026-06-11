@@ -38,4 +38,30 @@ describe("Input", () => {
     expect(input.isDown("right")).toBe(false);
     expect(input.isDown("sprint")).toBe(false);
   });
+
+  it("tracks multiple simultaneous actions", () => {
+    const input = new Input();
+    input.handleKey("KeyW", true);
+    input.handleKey("KeyA", true);
+    expect(input.isDown("forward")).toBe(true);
+    expect(input.isDown("left")).toBe(true);
+  });
+
+  it("clears all pressed actions", () => {
+    const input = new Input();
+    input.handleKey("KeyW", true);
+    input.handleKey("ShiftLeft", true);
+    input.clear();
+    expect(input.isDown("forward")).toBe(false);
+    expect(input.isDown("sprint")).toBe(false);
+  });
+
+  it("respects custom bindings", () => {
+    const input = new Input({ KeyJ: "forward" });
+    input.handleKey("KeyJ", true);
+    expect(input.isDown("forward")).toBe(true);
+    input.handleKey("KeyW", true);
+    expect(input.isDown("forward")).toBe(true);
+    expect(input.isDown("back")).toBe(false);
+  });
 });

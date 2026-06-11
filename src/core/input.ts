@@ -35,6 +35,11 @@ export class Input {
     return this.pressed.has(action);
   }
 
+  /** Drop all pressed state — used on window blur so held keys don't stick. */
+  clear(): void {
+    this.pressed.clear();
+  }
+
   private onKeyDown = (event: Event): void => {
     if (event instanceof KeyboardEvent && !event.repeat) {
       this.handleKey(event.code, true);
@@ -47,13 +52,19 @@ export class Input {
     }
   };
 
+  private onBlur = (): void => {
+    this.clear();
+  };
+
   attach(target: EventTarget): void {
     target.addEventListener("keydown", this.onKeyDown);
     target.addEventListener("keyup", this.onKeyUp);
+    target.addEventListener("blur", this.onBlur);
   }
 
   detach(target: EventTarget): void {
     target.removeEventListener("keydown", this.onKeyDown);
     target.removeEventListener("keyup", this.onKeyUp);
+    target.removeEventListener("blur", this.onBlur);
   }
 }

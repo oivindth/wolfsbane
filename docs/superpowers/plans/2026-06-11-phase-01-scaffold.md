@@ -521,6 +521,32 @@ describe("Input", () => {
     expect(input.isDown("right")).toBe(false);
     expect(input.isDown("sprint")).toBe(false);
   });
+
+  it("tracks multiple simultaneous actions", () => {
+    const input = new Input();
+    input.handleKey("KeyW", true);
+    input.handleKey("KeyA", true);
+    expect(input.isDown("forward")).toBe(true);
+    expect(input.isDown("left")).toBe(true);
+  });
+
+  it("clears all pressed actions", () => {
+    const input = new Input();
+    input.handleKey("KeyW", true);
+    input.handleKey("ShiftLeft", true);
+    input.clear();
+    expect(input.isDown("forward")).toBe(false);
+    expect(input.isDown("sprint")).toBe(false);
+  });
+
+  it("respects custom bindings", () => {
+    const input = new Input({ KeyJ: "forward" });
+    input.handleKey("KeyJ", true);
+    expect(input.isDown("forward")).toBe(true);
+    input.handleKey("KeyW", true);
+    expect(input.isDown("forward")).toBe(true);
+    expect(input.isDown("back")).toBe(false);
+  });
 });
 ```
 
@@ -572,6 +598,11 @@ export class Input {
     return this.pressed.has(action);
   }
 
+  /** Drop all pressed state — used on window blur so held keys don't stick. */
+  clear(): void {
+    this.pressed.clear();
+  }
+
   private onKeyDown = (event: Event): void => {
     if (event instanceof KeyboardEvent && !event.repeat) {
       this.handleKey(event.code, true);
@@ -584,14 +615,20 @@ export class Input {
     }
   };
 
+  private onBlur = (): void => {
+    this.clear();
+  };
+
   attach(target: EventTarget): void {
     target.addEventListener("keydown", this.onKeyDown);
     target.addEventListener("keyup", this.onKeyUp);
+    target.addEventListener("blur", this.onBlur);
   }
 
   detach(target: EventTarget): void {
     target.removeEventListener("keydown", this.onKeyDown);
     target.removeEventListener("keyup", this.onKeyUp);
+    target.removeEventListener("blur", this.onBlur);
   }
 }
 ```
@@ -602,13 +639,13 @@ export class Input {
 pnpm vitest run src/core/input.test.ts
 ```
 
-Expected: PASS — 4 tests.
+Expected: PASS — 7 tests.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/core/input.ts src/core/input.test.ts
-git commit -m "feat: add input action mapping"
+git add src/core/input.ts src/core/input.test.ts docs/superpowers/plans/2026-06-11-phase-01-scaffold.md
+git commit -m "fix: clear held input actions on window blur"
 ```
 
 ---
