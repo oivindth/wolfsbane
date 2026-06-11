@@ -1,3 +1,4 @@
+import "@babylonjs/loaders/glTF/2.0";
 import { Engine, HavokPlugin, Scene, Vector3 } from "@babylonjs/core";
 import HavokPhysics from "@babylonjs/havok";
 
