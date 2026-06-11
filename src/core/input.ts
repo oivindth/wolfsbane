@@ -1,4 +1,14 @@
-export type Action = "forward" | "back" | "left" | "right" | "sprint";
+export type Action =
+  | "forward"
+  | "back"
+  | "left"
+  | "right"
+  | "sprint"
+  | "roll"
+  | "attack"
+  | "lockToggle"
+  | "debugHit"
+  | "debugDeath";
 
 const DEFAULT_BINDINGS: Readonly<Record<string, Action>> = {
   KeyW: "forward",
@@ -11,10 +21,16 @@ const DEFAULT_BINDINGS: Readonly<Record<string, Action>> = {
   ArrowRight: "right",
   ShiftLeft: "sprint",
   ShiftRight: "sprint",
+  Space: "roll",
+  KeyF: "attack",
+  Tab: "lockToggle",
+  KeyH: "debugHit",
+  KeyK: "debugDeath",
 };
 
 export class Input {
   private pressed = new Set<Action>();
+  private pressedThisFrame = new Set<Action>();
   private bindings: Record<string, Action>;
 
   constructor(bindings: Record<string, Action> = { ...DEFAULT_BINDINGS }) {
@@ -25,6 +41,9 @@ export class Input {
     const action = this.bindings[code];
     if (!action) return;
     if (down) {
+      if (!this.pressed.has(action)) {
+        this.pressedThisFrame.add(action);
+      }
       this.pressed.add(action);
     } else {
       this.pressed.delete(action);
@@ -35,14 +54,28 @@ export class Input {
     return this.pressed.has(action);
   }
 
+  /** True if the action went down since the last endFrame(). */
+  justPressed(action: Action): boolean {
+    return this.pressedThisFrame.has(action);
+  }
+
+  /** Call once per game-loop frame, after all justPressed reads. */
+  endFrame(): void {
+    this.pressedThisFrame.clear();
+  }
+
   /** Drop all pressed state — used on window blur so held keys don't stick. */
   clear(): void {
     this.pressed.clear();
+    this.pressedThisFrame.clear();
   }
 
   private onKeyDown = (event: Event): void => {
-    if (event instanceof KeyboardEvent && !event.repeat) {
-      this.handleKey(event.code, true);
+    if (event instanceof KeyboardEvent && this.bindings[event.code]) {
+      event.preventDefault();
+      if (!event.repeat) {
+        this.handleKey(event.code, true);
+      }
     }
   };
 
