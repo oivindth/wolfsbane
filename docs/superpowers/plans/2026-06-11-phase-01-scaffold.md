@@ -20,7 +20,7 @@
 **Files:**
 - Create: `.gitignore`
 
-- [ ] **Step 1: Initialize the repo with an empty root commit on main**
+- [x] **Step 1: Initialize the repo with an empty root commit on main**
 
 ```bash
 cd /Users/oivind/repos/temp/game
@@ -31,7 +31,7 @@ git switch -c feature/01-scaffold
 
 Expected: `Switched to a new branch 'feature/01-scaffold'`. All further commits happen on this branch.
 
-- [ ] **Step 2: Create `.gitignore`**
+- [x] **Step 2: Create `.gitignore`**
 
 ```gitignore
 node_modules/
@@ -40,7 +40,7 @@ dist/
 .DS_Store
 ```
 
-- [ ] **Step 3: Commit the planning docs (already present in `docs/`) and .gitignore**
+- [x] **Step 3: Commit the planning docs (already present in `docs/`) and .gitignore**
 
 ```bash
 git add .gitignore docs/
@@ -62,7 +62,7 @@ git commit -m "docs: add Wolfsbane vertical-slice spec and phase 1 plan"
 - Create: `src/style.css`
 - Create: `src/core/game.ts` (stub — replaced in Task 8)
 
-- [ ] **Step 1: Write `package.json`**
+- [x] **Step 1: Write `package.json`**
 
 ```json
 {
@@ -82,7 +82,7 @@ git commit -m "docs: add Wolfsbane vertical-slice spec and phase 1 plan"
 }
 ```
 
-- [ ] **Step 2: Install dependencies**
+- [x] **Step 2: Install dependencies**
 
 ```bash
 pnpm add @babylonjs/core @babylonjs/havok
@@ -91,7 +91,7 @@ pnpm add -D vite typescript svelte @sveltejs/vite-plugin-svelte @tsconfig/svelte
 
 Expected: lockfile created, no peer-dependency errors. (`@babylonjs/loaders` is deliberately deferred to Phase 2 — nothing loads GLB yet.)
 
-- [ ] **Step 3: Write `vite.config.ts`**
+- [x] **Step 3: Write `vite.config.ts`**
 
 ```ts
 /// <reference types="vitest/config" />
@@ -110,7 +110,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 4: Write `svelte.config.js`**
+- [x] **Step 4: Write `svelte.config.js`**
 
 ```js
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
@@ -120,7 +120,7 @@ export default {
 };
 ```
 
-- [ ] **Step 5: Write `tsconfig.json`**
+- [x] **Step 5: Write `tsconfig.json`**
 
 ```json
 {
@@ -138,7 +138,7 @@ export default {
 }
 ```
 
-- [ ] **Step 6: Write `index.html`**
+- [x] **Step 6: Write `index.html`**
 
 ```html
 <!doctype html>
@@ -155,7 +155,7 @@ export default {
 </html>
 ```
 
-- [ ] **Step 7: Write `src/style.css`**
+- [x] **Step 7: Write `src/style.css`**
 
 ```css
 html,
@@ -172,7 +172,7 @@ body {
 }
 ```
 
-- [ ] **Step 8: Write `src/main.ts`**
+- [x] **Step 8: Write `src/main.ts`**
 
 ```ts
 import { mount } from "svelte";
@@ -189,7 +189,7 @@ const app = mount(App, { target });
 export default app;
 ```
 
-- [ ] **Step 9: Write the stub `src/core/game.ts`** (real implementation lands in Task 8)
+- [x] **Step 9: Write the stub `src/core/game.ts`** (real implementation lands in Task 8)
 
 ```ts
 export interface Game {
@@ -207,7 +207,7 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
 }
 ```
 
-- [ ] **Step 10: Write `src/App.svelte`**
+- [x] **Step 10: Write `src/App.svelte`**
 
 ```svelte
 <script lang="ts">
@@ -246,7 +246,7 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
 </style>
 ```
 
-- [ ] **Step 11: Verify the dev server runs**
+- [x] **Step 11: Verify the dev server runs**
 
 ```bash
 pnpm dev
@@ -254,7 +254,7 @@ pnpm dev
 
 Open http://localhost:5173 — expect a dark page and the console log `Wolfsbane: game stub started`. Stop the server.
 
-- [ ] **Step 12: Commit**
+- [x] **Step 12: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml vite.config.ts svelte.config.js tsconfig.json index.html src/
@@ -269,7 +269,7 @@ git commit -m "chore: scaffold Vite + Svelte 5 + Babylon project"
 - Create: `biome.json` (generated, then adjusted)
 - Create: `src/core/smoke.test.ts` (deleted again in Task 4)
 
-- [ ] **Step 1: Generate the Biome config**
+- [x] **Step 1: Generate the Biome config**
 
 ```bash
 pnpm biome init
@@ -277,7 +277,7 @@ pnpm biome init
 
 Expected: `biome.json` created.
 
-- [ ] **Step 2: Adjust `biome.json`** — keep the generated `$schema`/version line as-is, ensure these settings (merge into the generated file):
+- [x] **Step 2: Adjust `biome.json`** — keep the generated `$schema`/version line as-is, ensure these settings (merge into the generated file):
 
 ```json
 {
@@ -297,7 +297,7 @@ Expected: `biome.json` created.
 }
 ```
 
-- [ ] **Step 3: Write a smoke test `src/core/smoke.test.ts`**
+- [x] **Step 3: Write a smoke test `src/core/smoke.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -309,7 +309,7 @@ describe("toolchain", () => {
 });
 ```
 
-- [ ] **Step 4: Verify all three tools pass**
+- [x] **Step 4: Verify all three tools pass**
 
 ```bash
 pnpm biome check --write .
@@ -319,7 +319,7 @@ pnpm check
 
 Expected: Biome applies/passes formatting; Vitest reports `1 passed`; `pnpm check` exits 0 (svelte-check: 0 errors).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add biome.json src/core/smoke.test.ts package.json
@@ -335,7 +335,7 @@ git commit -m "chore: add biome, vitest, svelte-check tooling"
 - Create: `src/core/events.test.ts`
 - Delete: `src/core/smoke.test.ts`
 
-- [ ] **Step 1: Write the failing test `src/core/events.test.ts`**
+- [x] **Step 1: Write the failing test `src/core/events.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -396,7 +396,7 @@ describe("EventBus", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 ```bash
 pnpm vitest run src/core/events.test.ts
@@ -404,7 +404,7 @@ pnpm vitest run src/core/events.test.ts
 
 Expected: FAIL — `Cannot find module './events'` (or equivalent).
 
-- [ ] **Step 3: Write `src/core/events.ts`**
+- [x] **Step 3: Write `src/core/events.ts`**
 
 ```ts
 /**
@@ -443,7 +443,7 @@ export class EventBus<E extends Record<string, unknown> = GameEvents> {
 export const events = new EventBus();
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 ```bash
 pnpm vitest run src/core/events.test.ts
@@ -451,7 +451,7 @@ pnpm vitest run src/core/events.test.ts
 
 Expected: PASS — 5 tests.
 
-- [ ] **Step 5: Delete the smoke test, run the full suite and checks**
+- [x] **Step 5: Delete the smoke test, run the full suite and checks**
 
 ```bash
 rm src/core/smoke.test.ts
@@ -460,7 +460,7 @@ pnpm test && pnpm check
 
 Expected: 5 passed; checks exit 0.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/core/events.ts src/core/events.test.ts
@@ -478,7 +478,7 @@ git commit -m "feat: add typed event bus"
 
 The DOM listener glue is deliberately thin; the testable logic is `handleKey`/`isDown`, which need no DOM.
 
-- [ ] **Step 1: Write the failing test `src/core/input.test.ts`**
+- [x] **Step 1: Write the failing test `src/core/input.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -550,7 +550,7 @@ describe("Input", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 ```bash
 pnpm vitest run src/core/input.test.ts
@@ -558,7 +558,7 @@ pnpm vitest run src/core/input.test.ts
 
 Expected: FAIL — `Cannot find module './input'`.
 
-- [ ] **Step 3: Write `src/core/input.ts`**
+- [x] **Step 3: Write `src/core/input.ts`**
 
 ```ts
 export type Action = "forward" | "back" | "left" | "right" | "sprint";
@@ -633,7 +633,7 @@ export class Input {
 }
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 ```bash
 pnpm vitest run src/core/input.test.ts
@@ -641,7 +641,7 @@ pnpm vitest run src/core/input.test.ts
 
 Expected: PASS — 7 tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/core/input.ts src/core/input.test.ts docs/superpowers/plans/2026-06-11-phase-01-scaffold.md
@@ -658,7 +658,7 @@ git commit -m "fix: clear held input actions on window blur"
 
 Pure functions with no Babylon imports. Conventions: left-handed Babylon world, yaw measured from +Z toward +X, `yaw = atan2(x, z)`.
 
-- [ ] **Step 1: Write the failing test `src/actors/movement.test.ts`**
+- [x] **Step 1: Write the failing test `src/actors/movement.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -730,7 +730,7 @@ describe("lerpAngle", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 ```bash
 pnpm vitest run src/actors/movement.test.ts
@@ -738,7 +738,7 @@ pnpm vitest run src/actors/movement.test.ts
 
 Expected: FAIL — `Cannot find module './movement'`.
 
-- [ ] **Step 3: Write `src/actors/movement.ts`**
+- [x] **Step 3: Write `src/actors/movement.ts`**
 
 ```ts
 export interface MoveInput {
@@ -801,7 +801,7 @@ export function lerpAngle(from: number, to: number, t: number): number {
 }
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 ```bash
 pnpm vitest run src/actors/movement.test.ts
@@ -809,7 +809,7 @@ pnpm vitest run src/actors/movement.test.ts
 
 Expected: PASS — 11 tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/actors/movement.ts src/actors/movement.test.ts
@@ -826,7 +826,7 @@ git commit -m "feat: add camera-relative movement math"
 
 No unit tests here — this is engine glue with no logic; it's verified visually in Task 8.
 
-- [ ] **Step 1: Write `src/core/engine.ts`**
+- [x] **Step 1: Write `src/core/engine.ts`**
 
 ```ts
 import { Engine, HavokPlugin, Scene, Vector3 } from "@babylonjs/core";
@@ -848,7 +848,7 @@ export async function createEngine(canvas: HTMLCanvasElement): Promise<EngineCon
 
 Note: root-package imports (`@babylonjs/core`) are intentional for now — per-file tree-shaken imports require side-effect imports that are easy to get wrong. Bundle-size optimization is a phase 9 concern.
 
-- [ ] **Step 2: Write `src/world/testZone.ts`**
+- [x] **Step 2: Write `src/world/testZone.ts`**
 
 ```ts
 import {
@@ -894,7 +894,7 @@ export function buildTestZone(scene: Scene): void {
 }
 ```
 
-- [ ] **Step 3: Type-check**
+- [x] **Step 3: Type-check**
 
 ```bash
 pnpm check
@@ -902,7 +902,7 @@ pnpm check
 
 Expected: exit 0.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/core/engine.ts src/world/testZone.ts
@@ -920,7 +920,7 @@ git commit -m "feat: bootstrap Babylon engine with Havok and test zone"
 - Modify: `src/core/game.ts` (replace the Task 2 stub entirely)
 - Modify: `src/App.svelte` (add FPS readout)
 
-- [ ] **Step 1: Write `src/actors/cameraRig.ts`**
+- [x] **Step 1: Write `src/actors/cameraRig.ts`**
 
 ```ts
 import { ArcRotateCamera, type Scene, Vector3 } from "@babylonjs/core";
@@ -954,7 +954,7 @@ export class CameraRig {
 }
 ```
 
-- [ ] **Step 2: Write `src/actors/playerController.ts`**
+- [x] **Step 2: Write `src/actors/playerController.ts`**
 
 ```ts
 import {
@@ -1029,7 +1029,7 @@ export class Player {
 }
 ```
 
-- [ ] **Step 3: Write `src/ui/hud.svelte.ts`** (first Svelte↔game-loop bridge; grows in phase 3)
+- [x] **Step 3: Write `src/ui/hud.svelte.ts`** (first Svelte↔game-loop bridge; grows in phase 3)
 
 ```ts
 export const hud = $state({
@@ -1037,7 +1037,7 @@ export const hud = $state({
 });
 ```
 
-- [ ] **Step 4: Replace `src/core/game.ts` with the real implementation**
+- [x] **Step 4: Replace `src/core/game.ts` with the real implementation**
 
 ```ts
 import { CameraRig } from "../actors/cameraRig";
@@ -1095,7 +1095,7 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
 }
 ```
 
-- [ ] **Step 5: Add the FPS readout to `src/App.svelte`** — replace the markup/style sections so the file becomes:
+- [x] **Step 5: Add the FPS readout to `src/App.svelte`** — replace the markup/style sections so the file becomes:
 
 ```svelte
 <script lang="ts">
@@ -1158,7 +1158,7 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
 </style>
 ```
 
-- [ ] **Step 6: Run checks and tests**
+- [x] **Step 6: Run checks and tests**
 
 ```bash
 pnpm test && pnpm check
@@ -1166,7 +1166,7 @@ pnpm test && pnpm check
 
 Expected: all tests pass; checks exit 0.
 
-- [ ] **Step 7: Manual verification in the browser**
+- [x] **Step 7: Manual verification in the browser**
 
 ```bash
 pnpm dev
@@ -1183,7 +1183,7 @@ Open http://localhost:5173 and verify ALL of:
 
 If physics fails to load with a WASM error, confirm `optimizeDeps.exclude: ["@babylonjs/havok"]` in `vite.config.ts` and restart `pnpm dev` (Vite caches pre-bundles).
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/actors/ src/ui/ src/core/game.ts src/App.svelte
@@ -1197,7 +1197,7 @@ git commit -m "feat: add player character controller, camera rig and FPS overlay
 **Files:**
 - Create: `README.md`
 
-- [ ] **Step 1: Write `README.md`**
+- [x] **Step 1: Write `README.md`**
 
 ````markdown
 # Wolfsbane
@@ -1219,7 +1219,7 @@ Design docs live in `docs/superpowers/specs/`, implementation plans in
 `docs/superpowers/plans/`.
 ````
 
-- [ ] **Step 2: Full verification**
+- [x] **Step 2: Full verification**
 
 ```bash
 pnpm test && pnpm check && pnpm build
@@ -1227,14 +1227,14 @@ pnpm test && pnpm check && pnpm build
 
 Expected: tests pass, checks exit 0, `dist/` builds without errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add README.md
 git commit -m "docs: add README with dev commands"
 ```
 
-- [ ] **Step 4: Finish the branch** — use the superpowers:finishing-a-development-branch skill to decide merge/PR/next steps. Phase 2 (character & animation) gets its own plan and branch.
+- [x] **Step 4: Finish the branch** — use the superpowers:finishing-a-development-branch skill to decide merge/PR/next steps. Phase 2 (character & animation) gets its own plan and branch.
 
 ---
 
