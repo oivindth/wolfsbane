@@ -19,11 +19,13 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
 
   const cameraRig = new CameraRig(scene, canvas);
   const player = new Player(scene, input, cameraRig);
+  await player.loadModel(scene);
 
   const beforeRender = scene.onBeforeRenderObservable.add(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
     player.update(dt);
     cameraRig.follow(player.position);
+    input.endFrame();
   });
 
   let fpsAccumulator = 0;
