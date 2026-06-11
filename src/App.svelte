@@ -26,7 +26,7 @@
 <div id="overlay-root">
   <div class="fps">{Math.round(hud.fps)} FPS</div>
   {#if bootError}
-    <div class="boot-error">Failed to start: {bootError}</div>
+    <div class="boot-error" role="alert">Failed to start: {bootError}</div>
   {/if}
 </div>
 

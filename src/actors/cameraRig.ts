@@ -2,6 +2,7 @@ import { ArcRotateCamera, type Scene, Vector3 } from "@babylonjs/core";
 
 export class CameraRig {
   readonly camera: ArcRotateCamera;
+  private readonly directionScratch = new Vector3();
 
   constructor(scene: Scene, canvas: HTMLCanvasElement) {
     this.camera = new ArcRotateCamera(
@@ -21,8 +22,11 @@ export class CameraRig {
 
   /** World yaw of the camera's view direction (left-handed, +Z = 0). */
   get yaw(): number {
-    const dir = this.camera.target.subtract(this.camera.position);
-    return Math.atan2(dir.x, dir.z);
+    this.camera.target.subtractToRef(
+      this.camera.position,
+      this.directionScratch,
+    );
+    return Math.atan2(this.directionScratch.x, this.directionScratch.z);
   }
 
   follow(position: Vector3): void {

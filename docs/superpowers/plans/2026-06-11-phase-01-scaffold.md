@@ -927,6 +927,7 @@ import { ArcRotateCamera, type Scene, Vector3 } from "@babylonjs/core";
 
 export class CameraRig {
   readonly camera: ArcRotateCamera;
+  private readonly directionScratch = new Vector3();
 
   constructor(scene: Scene, canvas: HTMLCanvasElement) {
     this.camera = new ArcRotateCamera("camera", -Math.PI / 2, 1.2, 8, new Vector3(0, 1.5, 0), scene);
@@ -939,8 +940,11 @@ export class CameraRig {
 
   /** World yaw of the camera's view direction (left-handed, +Z = 0). */
   get yaw(): number {
-    const dir = this.camera.target.subtract(this.camera.position);
-    return Math.atan2(dir.x, dir.z);
+    this.camera.target.subtractToRef(
+      this.camera.position,
+      this.directionScratch,
+    );
+    return Math.atan2(this.directionScratch.x, this.directionScratch.z);
   }
 
   follow(position: Vector3): void {
@@ -955,6 +959,7 @@ export class CameraRig {
 ```ts
 import {
   CharacterSupportedState,
+  type Mesh,
   MeshBuilder,
   PhysicsCharacterController,
   type Scene,
@@ -969,9 +974,10 @@ const DOWN = new Vector3(0, -1, 0);
 const TURN_RATE = 10;
 
 export class Player {
-  readonly mesh;
+  readonly mesh: Mesh;
   private controller: PhysicsCharacterController;
   private targetYaw = 0;
+  private readonly velocityScratch = new Vector3();
 
   constructor(
     scene: Scene,
@@ -1010,7 +1016,8 @@ export class Player {
       dt,
     );
 
-    this.controller.setVelocity(new Vector3(velocity.x, velocity.y, velocity.z));
+    this.velocityScratch.set(velocity.x, velocity.y, velocity.z);
+    this.controller.setVelocity(this.velocityScratch);
     this.controller.integrate(dt, support, GRAVITY);
     this.mesh.position.copyFrom(this.controller.getPosition());
 
@@ -1055,7 +1062,7 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
   const cameraRig = new CameraRig(scene, canvas);
   const player = new Player(scene, input, cameraRig);
 
-  scene.onBeforeRenderObservable.add(() => {
+  const beforeRender = scene.onBeforeRenderObservable.add(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
     player.update(dt);
     cameraRig.follow(player.position);
@@ -1080,6 +1087,8 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
     dispose(): void {
       window.removeEventListener("resize", onResize);
       input.detach(window);
+      scene.onBeforeRenderObservable.remove(beforeRender);
+      engine.stopRenderLoop();
       engine.dispose();
     },
   };
@@ -1110,6 +1119,9 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
 <canvas bind:this={canvas} id="game-canvas"></canvas>
 <div id="overlay-root">
   <div class="fps">{Math.round(hud.fps)} FPS</div>
+  {#if bootError}
+    <div class="boot-error" role="alert">Failed to start: {bootError}</div>
+  {/if}
 </div>
 
 <style>
@@ -1133,6 +1145,15 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
     color: #fff;
     font-size: 12px;
     opacity: 0.7;
+  }
+
+  .boot-error {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    color: #f66;
+    font-size: 16px;
   }
 </style>
 ```

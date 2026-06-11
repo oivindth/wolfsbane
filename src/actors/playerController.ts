@@ -1,5 +1,6 @@
 import {
   CharacterSupportedState,
+  type Mesh,
   MeshBuilder,
   PhysicsCharacterController,
   type Scene,
@@ -14,9 +15,10 @@ const DOWN = new Vector3(0, -1, 0);
 const TURN_RATE = 10;
 
 export class Player {
-  readonly mesh;
+  readonly mesh: Mesh;
   private controller: PhysicsCharacterController;
   private targetYaw = 0;
+  private readonly velocityScratch = new Vector3();
 
   constructor(
     scene: Scene,
@@ -60,9 +62,8 @@ export class Player {
       dt,
     );
 
-    this.controller.setVelocity(
-      new Vector3(velocity.x, velocity.y, velocity.z),
-    );
+    this.velocityScratch.set(velocity.x, velocity.y, velocity.z);
+    this.controller.setVelocity(this.velocityScratch);
     this.controller.integrate(dt, support, GRAVITY);
     this.mesh.position.copyFrom(this.controller.getPosition());
 
