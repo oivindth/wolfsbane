@@ -34,7 +34,7 @@ export function selectLocomotion(input: LocomotionInput): LocomotionState {
 
 /**
  * One-shot priority: death (terminal) > hit > roll/attack.
- * Hit interrupts attack but not roll (dodge keeps you safe).
+ * Hit interrupts attack but not roll (dodge keeps you safe); hit can also trigger freely from locomotion.
  * While a one-shot plays, locomotion changes are ignored.
  */
 export class AnimStateMachine {

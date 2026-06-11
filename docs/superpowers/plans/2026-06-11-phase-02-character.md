@@ -316,6 +316,19 @@ describe("AnimStateMachine", () => {
     expect(sm.trigger("attack")).toBe(false);
     expect(sm.isDead).toBe(true);
   });
+
+  it("triggers hit while idle", () => {
+    const sm = new AnimStateMachine();
+    expect(sm.trigger("hit")).toBe(true);
+    expect(sm.current).toBe("hit");
+  });
+
+  it("rejects re-triggering the same one-shot", () => {
+    const sm = new AnimStateMachine();
+    sm.trigger("attack");
+    expect(sm.trigger("attack")).toBe(false);
+    expect(sm.current).toBe("attack");
+  });
 });
 ```
 
@@ -353,7 +366,7 @@ export function selectLocomotion(input: LocomotionInput): LocomotionState {
 
 /**
  * One-shot priority: death (terminal) > hit > roll/attack.
- * Hit interrupts attack but not roll (dodge keeps you safe).
+ * Hit interrupts attack but not roll (dodge keeps you safe); hit can also trigger freely from locomotion.
  * While a one-shot plays, locomotion changes are ignored.
  */
 export class AnimStateMachine {
@@ -396,7 +409,7 @@ export class AnimStateMachine {
 }
 ```
 
-- [ ] **Step 4: Run tests** — 12 new tests pass; then `pnpm test && pnpm check` green.
+- [ ] **Step 4: Run tests** — 14 new tests pass; then `pnpm test && pnpm check` (41 passed) green.
 
 - [ ] **Step 5: Commit**
 
@@ -1060,7 +1073,7 @@ git commit -m "feat: lock-on rig with training dummy"
 pnpm test && pnpm check && pnpm build
 ```
 
-Expected: all tests pass (23 prior + 18 new = 41), checks exit 0, build OK. Full browser playthrough of every Task 6–8 verification point in one session.
+Expected: all tests pass (23 prior + 20 new = 43), checks exit 0, build OK. Full browser playthrough of every Task 6–8 verification point in one session.
 
 - [ ] **Step 3: Flip all `- [ ]` checkboxes in this plan to `- [x]`, commit**
 

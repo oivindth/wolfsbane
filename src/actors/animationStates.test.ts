@@ -145,4 +145,17 @@ describe("AnimStateMachine", () => {
     expect(sm.trigger("attack")).toBe(false);
     expect(sm.isDead).toBe(true);
   });
+
+  it("triggers hit while idle", () => {
+    const sm = new AnimStateMachine();
+    expect(sm.trigger("hit")).toBe(true);
+    expect(sm.current).toBe("hit");
+  });
+
+  it("rejects re-triggering the same one-shot", () => {
+    const sm = new AnimStateMachine();
+    sm.trigger("attack");
+    expect(sm.trigger("attack")).toBe(false);
+    expect(sm.current).toBe("attack");
+  });
 });
