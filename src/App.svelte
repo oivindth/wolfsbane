@@ -8,17 +8,25 @@
 
   onMount(() => {
     let game: Game | undefined;
+    let disposed = false;
     if (canvas) {
       startGame(canvas)
         .then((g) => {
-          game = g;
+          if (disposed) {
+            g.dispose();
+          } else {
+            game = g;
+          }
         })
         .catch((err: unknown) => {
           bootError = err instanceof Error ? err.message : String(err);
           console.error("Game startup failed:", err);
         });
     }
-    return () => game?.dispose();
+    return () => {
+      disposed = true;
+      game?.dispose();
+    };
   });
 </script>
 

@@ -12,7 +12,7 @@ A browser-playable, 3D third-person action RPG that captures the core Witcher 3 
 |---|---|
 | Form | 3D third-person |
 | Scope | Vertical slice: one zone, one contract quest line |
-| Engine | Babylon.js v8 |
+| Engine | Babylon.js v9 |
 | Art | Stylized low-poly CC0 packs (KayKit, Quaternius) + bundled animations |
 | Must-have systems | Combat (melee + dodge + 3 signs), dialogue choices, inventory, alchemy & potions, witcher senses, day/night + weather, skill tree & leveling |
 | Architecture | Feature modules + typed event bus; Svelte 5 overlay for all RPG UI |
@@ -21,7 +21,7 @@ A browser-playable, 3D third-person action RPG that captures the core Witcher 3 
 
 - **pnpm** — package manager (user preference; never npm)
 - **TypeScript (strict) + Vite**; Node LTS, single package
-- **Babylon.js v8** (`@babylonjs/core`, `@babylonjs/loaders`); Babylon's built-in audio engine
+- **Babylon.js v9** (`@babylonjs/core`, `@babylonjs/loaders`); Babylon's built-in audio engine (v9 was current at scaffold time — plan originally said v8; APIs used are identical)
 - **Havok physics** (`@babylonjs/havok` WASM) — character controller, collisions, melee shape casts
 - **Svelte 5 (runes)** — RPG UI overlay around the Babylon canvas; game loop publishes to reactive stores
 - **Vitest** — unit tests for pure logic; **svelte-check** for component type safety

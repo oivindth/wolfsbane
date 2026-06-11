@@ -33,4 +33,8 @@ export class CameraRig {
     this.camera.target.copyFrom(position);
     this.camera.target.y += 1.2;
   }
+
+  dispose(): void {
+    this.camera.dispose();
+  }
 }

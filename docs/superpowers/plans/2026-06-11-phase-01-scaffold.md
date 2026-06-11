@@ -6,7 +6,7 @@
 
 **Architecture:** Babylon.js scene driven by a `startGame()` bootstrap; pure-logic modules (event bus, input mapping, movement math) have zero Babylon imports and are Vitest-covered; Svelte 5 owns the DOM overlay and reads reactive state the game loop writes. Spec: `docs/superpowers/specs/2026-06-11-wolfsbane-vertical-slice-design.md`.
 
-**Tech Stack:** pnpm, Vite, TypeScript (strict), Svelte 5 (runes), Babylon.js v8 (`@babylonjs/core`), Havok (`@babylonjs/havok`), Vitest, Biome, svelte-check.
+**Tech Stack:** pnpm, Vite, TypeScript (strict), Svelte 5 (runes), Babylon.js v9 (`@babylonjs/core`), Havok (`@babylonjs/havok`), Vitest, Biome, svelte-check.
 
 **Conventions for the executor:**
 - Always `pnpm`, never `npm`/`npx`. (`pnpm biome …` / `pnpm vitest …` run the locally installed binaries.)
@@ -951,6 +951,10 @@ export class CameraRig {
     this.camera.target.copyFrom(position);
     this.camera.target.y += 1.2;
   }
+
+  dispose(): void {
+    this.camera.dispose();
+  }
 }
 ```
 
@@ -969,6 +973,11 @@ import type { Input } from "../core/input";
 import type { CameraRig } from "./cameraRig";
 import { computeMoveVelocity, lerpAngle } from "./movement";
 
+// Capsule dimensions, camera follow offset (cameraRig.ts) and the GLB swap in
+// phase 2 are a coupled set — change together.
+const CAPSULE_HEIGHT = 1.8;
+const CAPSULE_RADIUS = 0.4;
+
 const GRAVITY = new Vector3(0, -9.81, 0);
 const DOWN = new Vector3(0, -1, 0);
 const TURN_RATE = 10;
@@ -984,12 +993,12 @@ export class Player {
     private input: Input,
     private cameraRig: CameraRig,
   ) {
-    this.mesh = MeshBuilder.CreateCapsule("player", { height: 1.8, radius: 0.4 }, scene);
+    this.mesh = MeshBuilder.CreateCapsule("player", { height: CAPSULE_HEIGHT, radius: CAPSULE_RADIUS }, scene);
     const start = new Vector3(0, 2, 0);
     this.mesh.position.copyFrom(start);
     this.controller = new PhysicsCharacterController(
       start,
-      { capsuleHeight: 1.8, capsuleRadius: 0.4 },
+      { capsuleHeight: CAPSULE_HEIGHT, capsuleRadius: CAPSULE_RADIUS },
       scene,
     );
   }
@@ -1025,6 +1034,11 @@ export class Player {
       this.targetYaw = Math.atan2(velocity.x, velocity.z);
     }
     this.mesh.rotation.y = lerpAngle(this.mesh.rotation.y, this.targetYaw, TURN_RATE * dt);
+  }
+
+  dispose(): void {
+    this.controller.dispose();
+    this.mesh.dispose();
   }
 }
 ```
@@ -1089,6 +1103,8 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
       input.detach(window);
       scene.onBeforeRenderObservable.remove(beforeRender);
       engine.stopRenderLoop();
+      player.dispose();
+      cameraRig.dispose();
       engine.dispose();
     },
   };
@@ -1104,15 +1120,29 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
   import { hud } from "./ui/hud.svelte";
 
   let canvas: HTMLCanvasElement | undefined = $state();
+  let bootError: string | undefined = $state();
 
   onMount(() => {
     let game: Game | undefined;
+    let disposed = false;
     if (canvas) {
-      startGame(canvas).then((g) => {
-        game = g;
-      });
+      startGame(canvas)
+        .then((g) => {
+          if (disposed) {
+            g.dispose();
+          } else {
+            game = g;
+          }
+        })
+        .catch((err: unknown) => {
+          bootError = err instanceof Error ? err.message : String(err);
+          console.error("Game startup failed:", err);
+        });
     }
-    return () => game?.dispose();
+    return () => {
+      disposed = true;
+      game?.dispose();
+    };
   });
 </script>
 
@@ -1203,7 +1233,7 @@ git commit -m "feat: add player character controller, camera rig and FPS overlay
 # Wolfsbane
 
 A Witcher 3–inspired third-person action RPG running in the browser.
-Babylon.js + Havok + Svelte 5 + TypeScript.
+Babylon.js + Havok + Svelte 5 + TypeScript. Requires Node LTS (≥22) and pnpm 9+.
 
 ## Develop
 

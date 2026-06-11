@@ -10,6 +10,11 @@ import type { Input } from "../core/input";
 import type { CameraRig } from "./cameraRig";
 import { computeMoveVelocity, lerpAngle } from "./movement";
 
+// Capsule dimensions, camera follow offset (cameraRig.ts) and the GLB swap in
+// phase 2 are a coupled set — change together.
+const CAPSULE_HEIGHT = 1.8;
+const CAPSULE_RADIUS = 0.4;
+
 const GRAVITY = new Vector3(0, -9.81, 0);
 const DOWN = new Vector3(0, -1, 0);
 const TURN_RATE = 10;
@@ -27,14 +32,14 @@ export class Player {
   ) {
     this.mesh = MeshBuilder.CreateCapsule(
       "player",
-      { height: 1.8, radius: 0.4 },
+      { height: CAPSULE_HEIGHT, radius: CAPSULE_RADIUS },
       scene,
     );
     const start = new Vector3(0, 2, 0);
     this.mesh.position.copyFrom(start);
     this.controller = new PhysicsCharacterController(
       start,
-      { capsuleHeight: 1.8, capsuleRadius: 0.4 },
+      { capsuleHeight: CAPSULE_HEIGHT, capsuleRadius: CAPSULE_RADIUS },
       scene,
     );
   }
@@ -75,5 +80,10 @@ export class Player {
       this.targetYaw,
       TURN_RATE * dt,
     );
+  }
+
+  dispose(): void {
+    this.controller.dispose();
+    this.mesh.dispose();
   }
 }
