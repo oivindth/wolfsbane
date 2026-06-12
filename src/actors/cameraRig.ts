@@ -1,4 +1,10 @@
-import { ArcRotateCamera, type Scene, Vector3 } from "@babylonjs/core";
+import {
+  ArcRotateCamera,
+  PhysicsEngineV2,
+  PhysicsRaycastResult,
+  type Scene,
+  Vector3,
+} from "@babylonjs/core";
 import { MASK_WORLD } from "../core/collisionMasks";
 
 const COLLISION_MARGIN = 0.3;
@@ -7,6 +13,7 @@ export class CameraRig {
   readonly camera: ArcRotateCamera;
   private readonly directionScratch = new Vector3();
   private readonly rayEndScratch = new Vector3();
+  private readonly raycastResult = new PhysicsRaycastResult();
   private desiredRadius: number;
   private clamped = false;
 
@@ -48,7 +55,7 @@ export class CameraRig {
   /** Pull the camera in when world geometry blocks the view line. */
   private updateCollision(): void {
     const physics = this.scene.getPhysicsEngine();
-    if (!physics) return;
+    if (!physics || !(physics instanceof PhysicsEngineV2)) return;
     // While unobstructed, track the user's zoom as the desired radius.
     if (!this.clamped) {
       this.desiredRadius = this.camera.radius;
@@ -63,11 +70,17 @@ export class CameraRig {
       this.desiredRadius,
       this.rayEndScratch,
     );
-    const result = physics.raycast(this.camera.target, this.rayEndScratch, {
-      collideWith: MASK_WORLD,
-    });
-    if (result.hasHit) {
-      result.hitPointWorld.subtractToRef(
+    physics.raycastToRef(
+      this.camera.target,
+      this.rayEndScratch,
+      this.raycastResult,
+      {
+        collideWith: MASK_WORLD,
+      },
+    );
+    if (this.raycastResult.hasHit) {
+      // reuse directionScratch as the hit-distance vector after the raycast
+      this.raycastResult.hitPointWorld.subtractToRef(
         this.camera.target,
         this.directionScratch,
       );
@@ -77,11 +90,9 @@ export class CameraRig {
         this.camera.lowerRadiusLimit ?? 1,
       );
       this.clamped = true;
-    } else {
-      if (this.clamped) {
-        this.camera.radius = this.desiredRadius;
-        this.clamped = false;
-      }
+    } else if (this.clamped) {
+      this.camera.radius = this.desiredRadius;
+      this.clamped = false;
     }
   }
 

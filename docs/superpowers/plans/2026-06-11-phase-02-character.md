@@ -829,7 +829,11 @@ export class Player {
 
   dispose(): void {
     this.animController?.dispose();
-    this.controller.dispose();
+    // Babylon's controller.dispose() needs a live physics engine; during
+    // HMR teardown it may already be gone.
+    if (this.mesh.getScene().getPhysicsEngine()) {
+      this.controller.dispose();
+    }
     this.mesh.dispose();
   }
 }
@@ -891,6 +895,7 @@ groundPhysics.shape.filterMembershipMask = MASK_WORLD;
 ```ts
 import {
   ArcRotateCamera,
+  PhysicsEngineV2,
   PhysicsRaycastResult,
   type Scene,
   Vector3,
@@ -942,7 +947,7 @@ export class CameraRig {
   /** Pull the camera in when world geometry blocks the view line. */
   private updateCollision(): void {
     const physics = this.scene.getPhysicsEngine();
-    if (!physics) return;
+    if (!physics || !(physics instanceof PhysicsEngineV2)) return;
     // While unobstructed, track the user's zoom as the desired radius.
     if (!this.clamped) {
       this.desiredRadius = this.camera.radius;

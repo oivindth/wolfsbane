@@ -162,7 +162,11 @@ export class Player {
 
   dispose(): void {
     this.animController?.dispose();
-    this.controller.dispose();
+    // Babylon's controller.dispose() needs a live physics engine; during
+    // HMR teardown it may already be gone.
+    if (this.mesh.getScene().getPhysicsEngine()) {
+      this.controller.dispose();
+    }
     this.mesh.dispose();
   }
 }
