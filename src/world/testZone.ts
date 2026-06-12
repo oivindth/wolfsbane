@@ -10,6 +10,7 @@ import {
   StandardMaterial,
   Vector3,
 } from "@babylonjs/core";
+import { MASK_WORLD } from "../core/collisionMasks";
 
 /** Placeholder zone: lit ground plane with obstacle boxes. Replaced in phase 4. */
 export function buildTestZone(scene: Scene): void {
@@ -32,12 +33,13 @@ export function buildTestZone(scene: Scene): void {
   const groundMat = new StandardMaterial("groundMat", scene);
   groundMat.diffuseColor = new Color3(0.35, 0.5, 0.3);
   ground.material = groundMat;
-  const _groundPhysics = new PhysicsAggregate(
+  const groundPhysics = new PhysicsAggregate(
     ground,
     PhysicsShapeType.BOX,
     { mass: 0 },
     scene,
   );
+  groundPhysics.shape.filterMembershipMask = MASK_WORLD;
 
   const boxMat = new StandardMaterial("boxMat", scene);
   boxMat.diffuseColor = new Color3(0.55, 0.45, 0.35);
@@ -45,11 +47,12 @@ export function buildTestZone(scene: Scene): void {
     const box = MeshBuilder.CreateBox(`obstacle${i}`, { size: 2 }, scene);
     box.material = boxMat;
     box.position = new Vector3(i * 4 - 8, 1, 8);
-    const _boxPhysics = new PhysicsAggregate(
+    const boxPhysics = new PhysicsAggregate(
       box,
       PhysicsShapeType.BOX,
       { mass: 0 },
       scene,
     );
+    boxPhysics.shape.filterMembershipMask = MASK_WORLD;
   }
 }
