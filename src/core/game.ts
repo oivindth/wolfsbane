@@ -49,9 +49,9 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
       input.detach(window);
       scene.onBeforeRenderObservable.remove(beforeRender);
       engine.stopRenderLoop();
-      scene.dispose();
       player.dispose();
       cameraRig.dispose();
+      scene.dispose();
       engine.dispose();
     },
   };
