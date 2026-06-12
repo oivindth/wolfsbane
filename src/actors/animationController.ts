@@ -46,11 +46,22 @@ export class AnimationController {
     this.active = state;
   }
 
+  /** Stop and dispose every animation group this controller owns. */
+  dispose(): void {
+    for (const group of this.animations.values()) {
+      group.dispose();
+    }
+    this.playing.clear();
+    this.active = null;
+  }
+
   /** Per-frame weight fade toward the active state. */
   update(dt: number): void {
     const step = dt / FADE_SECONDS;
     for (const [state, group] of this.playing) {
       const target = state === this.active ? 1 : 0;
+      // play() initializes weight to 0; the -1 guard is defensive only
+      // (Babylon's unset-weight sentinel).
       const current = group.weight === -1 ? 1 : group.weight;
       const next =
         current +

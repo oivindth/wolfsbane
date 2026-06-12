@@ -113,7 +113,11 @@ export class Player {
         y: velocity.y,
         z: Math.cos(this.mesh.rotation.y) * ROLL_SPEED,
       };
-    } else if (current === "attack" || current === "hit" || this.isDead) {
+    } else if (
+      current === "attack" ||
+      current === "hit" ||
+      current === "death"
+    ) {
       velocity = { x: 0, y: velocity.y, z: 0 };
     }
 
@@ -157,6 +161,7 @@ export class Player {
   }
 
   dispose(): void {
+    this.animController?.dispose();
     this.controller.dispose();
     this.mesh.dispose();
   }
