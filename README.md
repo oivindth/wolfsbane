@@ -6,6 +6,18 @@ Babylon.js + Havok + Svelte 5 + TypeScript. Requires Node LTS (≥22) and pnpm 9
 **Play it:** https://oivindth.github.io/wolfsbane/ — deployed from `main` via
 GitHub Actions (runs tests + checks, then publishes the Vite build).
 
+## Controls
+
+| Input | Action |
+|---|---|
+| WASD / arrows | Move (camera-relative) |
+| Shift | Sprint |
+| Space | Dodge roll |
+| F | Attack |
+| Tab | Lock-on toggle (training dummy) |
+| Mouse drag / wheel | Orbit / zoom camera |
+| H / K | Debug: flinch / die (removed in phase 3) |
+
 ## Develop
 
 ```bash

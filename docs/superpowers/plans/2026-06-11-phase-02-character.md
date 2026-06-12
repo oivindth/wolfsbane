@@ -1,6 +1,6 @@
 # Wolfsbane Phase 2: Character & Animation — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Replace the capsule with a rigged, animated KayKit Knight driven by an animation state machine (idle/walk/run/strafe/roll/attack/hit/death/fall), add camera collision, and a lock-on rig with a training dummy.
 
@@ -27,7 +27,7 @@
 - Create: `public/assets/README.md`
 - Modify: `package.json` (+ `@babylonjs/loaders`)
 
-- [ ] **Step 1: Branch off up-to-date main**
+- [x] **Step 1: Branch off up-to-date main**
 
 ```bash
 cd /Users/oivind/repos/temp/game
@@ -35,7 +35,7 @@ git switch main && git pull
 git switch -c feature/02-character
 ```
 
-- [ ] **Step 2: Install the glTF loader package (must match @babylonjs/core major)**
+- [x] **Step 2: Install the glTF loader package (must match @babylonjs/core major)**
 
 ```bash
 pnpm add @babylonjs/loaders@^9
@@ -43,7 +43,7 @@ pnpm add @babylonjs/loaders@^9
 
 Expected: installs 9.x, no peer warnings.
 
-- [ ] **Step 3: Download the assets**
+- [x] **Step 3: Download the assets**
 
 ```bash
 mkdir -p public/assets/characters
@@ -54,7 +54,7 @@ ls -la public/assets/characters/
 
 Expected: `Knight.glb` ≈ 3.6 MB (3659532 bytes), license file a few KB. If the download is tiny (<100 KB) it's an error page — stop and report BLOCKED.
 
-- [ ] **Step 4: Write `public/assets/README.md`**
+- [x] **Step 4: Write `public/assets/README.md`**
 
 ```markdown
 # Asset sources & licenses
@@ -64,7 +64,7 @@ Expected: `Knight.glb` ≈ 3.6 MB (3659532 bytes), license file a few KB. If the
 | `characters/Knight.glb` | [KayKit Adventurers 1.0](https://github.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0) by Kay Lousberg | CC0 (see `characters/KAYKIT_LICENSE.txt`) |
 ```
 
-- [ ] **Step 5: Commit** (includes this plan document — it's untracked until now)
+- [x] **Step 5: Commit** (includes this plan document — it's untracked until now)
 
 ```bash
 git add package.json pnpm-lock.yaml public/assets/ docs/superpowers/plans/2026-06-11-phase-02-character.md
@@ -81,7 +81,7 @@ git commit -m "feat: add KayKit Knight character asset and glTF loader"
 
 The game needs trigger-style actions (roll/attack fire once per key press, not per held frame). Add: new bindings (Space→roll, KeyF→attack, Tab→lockToggle, KeyH→debugHit, KeyK→debugDeath) and a `justPressed`/`endFrame` edge-detection API. Also `preventDefault` for bound keys in the DOM glue (Tab steals focus, Space scrolls).
 
-- [ ] **Step 1: Add failing tests to `src/core/input.test.ts`** (run them, watch them fail before implementing)
+- [x] **Step 1: Add failing tests to `src/core/input.test.ts`** (run them, watch them fail before implementing)
 
 ```ts
   it("maps trigger keys to new actions", () => {
@@ -126,7 +126,7 @@ The game needs trigger-style actions (roll/attack fire once per key press, not p
 
 Run: `pnpm vitest run src/core/input.test.ts` — expect the 4 new tests FAIL (unknown actions / missing methods), 7 old PASS.
 
-- [ ] **Step 2: Implement in `src/core/input.ts`**
+- [x] **Step 2: Implement in `src/core/input.ts`**
 
 Extend the type and bindings:
 
@@ -211,9 +211,9 @@ In the DOM glue, prevent browser defaults for bound keys (Tab focus, Space scrol
   };
 ```
 
-- [ ] **Step 3: Run tests** — `pnpm vitest run src/core/input.test.ts`: 11 pass. Then `pnpm test && pnpm check`: full suite green, exit 0.
+- [x] **Step 3: Run tests** — `pnpm vitest run src/core/input.test.ts`: 11 pass. Then `pnpm test && pnpm check`: full suite green, exit 0.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/core/input.ts src/core/input.test.ts
@@ -230,7 +230,7 @@ git commit -m "feat: add trigger actions and edge-press detection to input"
 
 Pure logic, no Babylon imports. Two pieces: `selectLocomotion` (continuous states from movement) and `AnimStateMachine` (one-shot states with priorities: death > hit > roll ≈ attack; death is terminal; hit interrupts attack but not roll; one-shots can't be re-triggered while one is playing).
 
-- [ ] **Step 1: Write the failing test `src/actors/animationStates.test.ts`**
+- [x] **Step 1: Write the failing test `src/actors/animationStates.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -332,9 +332,9 @@ describe("AnimStateMachine", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify FAIL** — `pnpm vitest run src/actors/animationStates.test.ts` (cannot resolve `./animationStates`).
+- [x] **Step 2: Run to verify FAIL** — `pnpm vitest run src/actors/animationStates.test.ts` (cannot resolve `./animationStates`).
 
-- [ ] **Step 3: Write `src/actors/animationStates.ts`**
+- [x] **Step 3: Write `src/actors/animationStates.ts`**
 
 ```ts
 export type LocomotionState = "idle" | "walk" | "walkBack" | "strafeLeft" | "strafeRight" | "run" | "fall";
@@ -409,9 +409,9 @@ export class AnimStateMachine {
 }
 ```
 
-- [ ] **Step 4: Run tests** — 14 new tests pass; then `pnpm test && pnpm check` (41 passed) green.
+- [x] **Step 4: Run tests** — 14 new tests pass; then `pnpm test && pnpm check` (41 passed) green.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/actors/animationStates.ts src/actors/animationStates.test.ts
@@ -428,7 +428,7 @@ git commit -m "feat: add pure animation state machine"
 
 Maps every `AnimState` to a clip in `Knight.glb`. Lives in `src/data/` per the architecture (data, not logic). The completeness test prevents "added a state, forgot the clip" bugs.
 
-- [ ] **Step 1: Write the failing test `src/data/knightAnimations.test.ts`**
+- [x] **Step 1: Write the failing test `src/data/knightAnimations.test.ts`**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -465,7 +465,7 @@ describe("KNIGHT_CLIPS", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify FAIL**, then **Step 3: Write `src/data/knightAnimations.ts`**
+- [x] **Step 2: Run to verify FAIL**, then **Step 3: Write `src/data/knightAnimations.ts`**
 
 ```ts
 import type { AnimState } from "../actors/animationStates";
@@ -495,9 +495,9 @@ export const KNIGHT_CLIPS: Record<AnimState, ClipConfig> = {
 
 (The pack has no walk-speed strafes, only `Running_Strafe_*` — played at 0.7 speed they read fine for walking; revisit in phase 3 polish if needed.)
 
-- [ ] **Step 4: Run tests** — 2 pass; full suite + checks green.
+- [x] **Step 4: Run tests** — 2 pass; full suite + checks green.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/data/knightAnimations.ts src/data/knightAnimations.test.ts
@@ -514,13 +514,13 @@ git commit -m "feat: map animation states to Knight clips"
 
 Engine glue (no unit tests; verified in browser in Task 6). Loads the GLB, scales it to the physics capsule height, returns the root node + animation groups by name.
 
-- [ ] **Step 1: Register the glTF loader in `src/core/engine.ts`** — add as the FIRST import line:
+- [x] **Step 1: Register the glTF loader in `src/core/engine.ts`** — add as the FIRST import line:
 
 ```ts
 import "@babylonjs/loaders/glTF/2.0";
 ```
 
-- [ ] **Step 2: Write `src/actors/characterModel.ts`**
+- [x] **Step 2: Write `src/actors/characterModel.ts`**
 
 ```ts
 import {
@@ -575,9 +575,9 @@ export async function loadCharacterModel(
 }
 ```
 
-- [ ] **Step 3: Verify it compiles** — `pnpm check` exit 0 (nothing calls it yet; browser verification comes with Task 6).
+- [x] **Step 3: Verify it compiles** — `pnpm check` exit 0 (nothing calls it yet; browser verification comes with Task 6).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/core/engine.ts src/actors/characterModel.ts
@@ -593,7 +593,7 @@ git commit -m "feat: add GLB character model loader"
 
 The capsule becomes an invisible collision proxy; the Knight is the visual. The `AnimationController` cross-fades AnimationGroup weights toward the state machine's current state and reports one-shot ends.
 
-- [ ] **Step 1: Write `src/actors/animationController.ts`**
+- [x] **Step 1: Write `src/actors/animationController.ts`**
 
 ```ts
 import type { AnimationGroup } from "@babylonjs/core";
@@ -670,7 +670,7 @@ export class AnimationController {
 }
 ```
 
-- [ ] **Step 2: Rewrite `src/actors/playerController.ts`** — full new content:
+- [x] **Step 2: Rewrite `src/actors/playerController.ts`** — full new content:
 
 ```ts
 import {
@@ -839,7 +839,7 @@ export class Player {
 }
 ```
 
-- [ ] **Step 3: Wire into `src/core/game.ts`** — after `const player = new Player(...)`, add:
+- [x] **Step 3: Wire into `src/core/game.ts`** — after `const player = new Player(...)`, add:
 
 ```ts
   await player.loadModel(scene);
@@ -851,9 +851,9 @@ and at the END of the `onBeforeRenderObservable` callback (after `cameraRig.foll
     input.endFrame();
 ```
 
-- [ ] **Step 4: Verify** — `pnpm test && pnpm check` green. Then browser: `pnpm dev` (background), use Playwright tools on http://localhost:5173 — expect the Knight (not a capsule) standing on the ground playing Idle; WASD walks with walk anim; Shift runs; Space rolls (forward burst); F swings the sword; H flinches; K dies and input stops. No console errors. Kill the server.
+- [x] **Step 4: Verify** — `pnpm test && pnpm check` green. Then browser: `pnpm dev` (background), use Playwright tools on http://localhost:5173 — expect the Knight (not a capsule) standing on the ground playing Idle; WASD walks with walk anim; Shift runs; Space rolls (forward burst); F swings the sword; H flinches; K dies and input stops. No console errors. Kill the server.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/actors/animationController.ts src/actors/playerController.ts src/core/game.ts
@@ -872,14 +872,14 @@ git commit -m "feat: animated Knight character with state-driven clips"
 
 Havok raycast from the camera target toward the desired camera position; on hit, pull the camera in. Membership masks keep the ray from hitting the player.
 
-- [ ] **Step 1: Write `src/core/collisionMasks.ts`**
+- [x] **Step 1: Write `src/core/collisionMasks.ts`**
 
 ```ts
 /** Havok filterMembershipMask bits. World geometry blocks the camera. */
 export const MASK_WORLD = 1;
 ```
 
-- [ ] **Step 2: Tag world geometry in `src/world/testZone.ts`** — after creating each `PhysicsAggregate` (ground and obstacle boxes), set its mask. Example for the ground (same pattern for boxes inside the loop):
+- [x] **Step 2: Tag world geometry in `src/world/testZone.ts`** — after creating each `PhysicsAggregate` (ground and obstacle boxes), set its mask. Example for the ground (same pattern for boxes inside the loop):
 
 ```ts
 import { MASK_WORLD } from "../core/collisionMasks";
@@ -890,7 +890,7 @@ groundPhysics.shape.filterMembershipMask = MASK_WORLD;
 
 (Rename the `_groundPhysics`/`_boxPhysics` underscore variables — they're used now.)
 
-- [ ] **Step 3: Add collision to `src/actors/cameraRig.ts`** — full new content:
+- [x] **Step 3: Add collision to `src/actors/cameraRig.ts`** — full new content:
 
 ```ts
 import {
@@ -1015,9 +1015,9 @@ export class CameraRig {
 
 (Constructor signature changed: `scene` is now a stored private field — `game.ts` already passes it first, no call-site change needed.)
 
-- [ ] **Step 4: Verify** — `pnpm test && pnpm check` green. Browser: orbit the camera so a box sits between camera and Knight — the camera should snap closer instead of clipping through the box, and zoom back out when clear. Kill the server.
+- [x] **Step 4: Verify** — `pnpm test && pnpm check` green. Browser: orbit the camera so a box sits between camera and Knight — the camera should snap closer instead of clipping through the box, and zoom back out when clear. Kill the server.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/core/collisionMasks.ts src/world/testZone.ts src/actors/cameraRig.ts
@@ -1035,7 +1035,7 @@ git commit -m "feat: camera collision via Havok raycast"
 
 A lockable training dummy stands in the zone. Tab toggles lock-on: the camera eases behind the player relative to the dummy, and the player faces the dummy (strafe/backpedal animations from Task 6 become visible).
 
-- [ ] **Step 1: Add the dummy to `src/world/testZone.ts`** — change the function signature to return it:
+- [x] **Step 1: Add the dummy to `src/world/testZone.ts`** — change the function signature to return it:
 
 ```ts
 export interface TestZone {
@@ -1061,7 +1061,7 @@ export function buildTestZone(scene: Scene): TestZone {
 
 (No physics body on the dummy — it's a visual lock target only.)
 
-- [ ] **Step 2: Add lock-on steering to `src/actors/cameraRig.ts`** — add a field, a method, and steering inside `follow`:
+- [x] **Step 2: Add lock-on steering to `src/actors/cameraRig.ts`** — add a field, a method, and steering inside `follow`:
 
 ```ts
 import { lerpAngle } from "./movement";
@@ -1085,7 +1085,7 @@ const LOCK_STEER_RATE = 5;
   }
 ```
 
-- [ ] **Step 3: Wire the toggle in `src/core/game.ts`** — `buildTestZone` now returns the zone; capture it and handle Tab inside the `onBeforeRenderObservable` callback BEFORE `player.update(dt)`:
+- [x] **Step 3: Wire the toggle in `src/core/game.ts`** — `buildTestZone` now returns the zone; capture it and handle Tab inside the `onBeforeRenderObservable` callback BEFORE `player.update(dt)`:
 
 ```ts
   const zone = buildTestZone(scene);
@@ -1099,9 +1099,9 @@ const LOCK_STEER_RATE = 5;
     cameraRig.follow(player.position, dt);
 ```
 
-- [ ] **Step 4: Verify** — `pnpm test && pnpm check` green. Browser: press Tab near the red dummy — camera swings behind the Knight facing the dummy; A/D now strafe (strafe clips), S backpedals (Walking_Backwards); Tab again releases. Camera still collides with boxes while locked. Kill the server.
+- [x] **Step 4: Verify** — `pnpm test && pnpm check` green. Browser: press Tab near the red dummy — camera swings behind the Knight facing the dummy; A/D now strafe (strafe clips), S backpedals (Walking_Backwards); Tab again releases. Camera still collides with boxes while locked. Kill the server.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/world/testZone.ts src/actors/cameraRig.ts src/core/game.ts
@@ -1116,7 +1116,7 @@ git commit -m "feat: lock-on rig with training dummy"
 - Modify: `README.md` (controls table)
 - Modify: `docs/superpowers/plans/2026-06-11-phase-02-character.md` (checkboxes)
 
-- [ ] **Step 1: Add a controls section to `README.md`** (after the "Play it" paragraph):
+- [x] **Step 1: Add a controls section to `README.md`** (after the "Play it" paragraph):
 
 ```markdown
 ## Controls
@@ -1132,7 +1132,7 @@ git commit -m "feat: lock-on rig with training dummy"
 | H / K | Debug: flinch / die (removed in phase 3) |
 ```
 
-- [ ] **Step 2: Full verification**
+- [x] **Step 2: Full verification**
 
 ```bash
 pnpm test && pnpm check && pnpm build
@@ -1140,14 +1140,14 @@ pnpm test && pnpm check && pnpm build
 
 Expected: all tests pass (23 prior + 20 new = 43), checks exit 0, build OK. Full browser playthrough of every Task 6–8 verification point in one session.
 
-- [ ] **Step 3: Flip all `- [ ]` checkboxes in this plan to `- [x]`, commit**
+- [x] **Step 3: Flip all `- [x]` checkboxes in this plan to `- [x]`, commit**
 
 ```bash
 git add README.md docs/superpowers/plans/2026-06-11-phase-02-character.md
 git commit -m "docs: controls table and phase 2 plan close-out"
 ```
 
-- [ ] **Step 4: Finish the branch** — use superpowers:finishing-a-development-branch (PR to main; merging deploys to GitHub Pages automatically).
+- [x] **Step 4: Finish the branch** — use superpowers:finishing-a-development-branch (PR to main; merging deploys to GitHub Pages automatically).
 
 ---
 
