@@ -759,8 +759,11 @@ export class Player {
     // One-shot triggers (ignored while dead or mid-one-shot by the state machine).
     if (this.input.justPressed("roll")) this.stateMachine.trigger("roll");
     if (this.input.justPressed("attack")) this.stateMachine.trigger("attack");
-    if (this.input.justPressed("debugHit")) this.stateMachine.trigger("hit");
-    if (this.input.justPressed("debugDeath")) this.stateMachine.trigger("death");
+    if (import.meta.env.DEV) {
+      // Dev-only animation triggers (H/K); real damage drives these in phase 3.
+      if (this.input.justPressed("debugHit")) this.stateMachine.trigger("hit");
+      if (this.input.justPressed("debugDeath")) this.stateMachine.trigger("death");
+    }
 
     const current = this.stateMachine.current;
     let velocity = computeMoveVelocity(
@@ -1129,7 +1132,7 @@ git commit -m "feat: lock-on rig with training dummy"
 | F | Attack |
 | Tab | Lock-on toggle (training dummy) |
 | Mouse drag / wheel | Orbit / zoom camera |
-| H / K | Debug: flinch / die (removed in phase 3) |
+| H / K | Debug: flinch / die (dev builds only; removed in phase 3) |
 ```
 
 - [x] **Step 2: Full verification**

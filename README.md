@@ -16,7 +16,7 @@ GitHub Actions (runs tests + checks, then publishes the Vite build).
 | F | Attack |
 | Tab | Lock-on toggle (training dummy) |
 | Mouse drag / wheel | Orbit / zoom camera |
-| H / K | Debug: flinch / die (removed in phase 3) |
+| H / K | Debug: flinch / die (dev builds only; removed in phase 3) |
 
 ## Develop
 
