@@ -12,7 +12,7 @@ export interface Game {
 
 export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
   const { engine, scene } = await createEngine(canvas);
-  buildTestZone(scene);
+  const zone = buildTestZone(scene);
 
   const input = new Input();
   input.attach(window);
@@ -23,6 +23,11 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
 
   const beforeRender = scene.onBeforeRenderObservable.add(() => {
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
+    if (input.justPressed("lockToggle")) {
+      const locked = cameraRig.lockTarget !== null;
+      cameraRig.lockTarget = locked ? null : zone.dummyPosition;
+      player.lockTarget = locked ? null : zone.dummyPosition;
+    }
     player.update(dt);
     cameraRig.follow(player.position);
     input.endFrame();

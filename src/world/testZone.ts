@@ -12,8 +12,13 @@ import {
 } from "@babylonjs/core";
 import { MASK_WORLD } from "../core/collisionMasks";
 
+export interface TestZone {
+  /** Lock-on target for phase 2; replaced by real enemies in phase 3. */
+  dummyPosition: Vector3;
+}
+
 /** Placeholder zone: lit ground plane with obstacle boxes. Replaced in phase 4. */
-export function buildTestZone(scene: Scene): void {
+export function buildTestZone(scene: Scene): TestZone {
   scene.clearColor = new Color4(0.53, 0.75, 0.92, 1);
   scene.fogMode = Scene.FOGMODE_LINEAR;
   scene.fogStart = 60;
@@ -55,4 +60,16 @@ export function buildTestZone(scene: Scene): void {
     );
     boxPhysics.shape.filterMembershipMask = MASK_WORLD;
   }
+
+  const dummy = MeshBuilder.CreateCapsule(
+    "trainingDummy",
+    { height: 1.8, radius: 0.4 },
+    scene,
+  );
+  const dummyMat = new StandardMaterial("dummyMat", scene);
+  dummyMat.diffuseColor = new Color3(0.7, 0.25, 0.2);
+  dummy.material = dummyMat;
+  dummy.position = new Vector3(4, 0.9, -4);
+
+  return { dummyPosition: dummy.position };
 }
