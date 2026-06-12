@@ -64,4 +64,43 @@ describe("Input", () => {
     expect(input.isDown("forward")).toBe(true);
     expect(input.isDown("back")).toBe(false);
   });
+
+  it("maps trigger keys to new actions", () => {
+    const input = new Input();
+    for (const [code, action] of [
+      ["Space", "roll"],
+      ["KeyF", "attack"],
+      ["Tab", "lockToggle"],
+      ["KeyH", "debugHit"],
+      ["KeyK", "debugDeath"],
+    ] as const) {
+      input.handleKey(code, true);
+      expect(input.isDown(action)).toBe(true);
+    }
+  });
+
+  it("reports justPressed only until endFrame", () => {
+    const input = new Input();
+    input.handleKey("Space", true);
+    expect(input.justPressed("roll")).toBe(true);
+    input.endFrame();
+    expect(input.justPressed("roll")).toBe(false); // still held, but not new
+    expect(input.isDown("roll")).toBe(true);
+  });
+
+  it("reports justPressed again after release and re-press", () => {
+    const input = new Input();
+    input.handleKey("Space", true);
+    input.endFrame();
+    input.handleKey("Space", false);
+    input.handleKey("Space", true);
+    expect(input.justPressed("roll")).toBe(true);
+  });
+
+  it("clear() also clears justPressed", () => {
+    const input = new Input();
+    input.handleKey("Space", true);
+    input.clear();
+    expect(input.justPressed("roll")).toBe(false);
+  });
 });
