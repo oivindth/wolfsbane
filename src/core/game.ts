@@ -29,7 +29,7 @@ export async function startGame(canvas: HTMLCanvasElement): Promise<Game> {
       player.lockTarget = locked ? null : zone.dummyPosition;
     }
     player.update(dt);
-    cameraRig.follow(player.position);
+    cameraRig.follow(player.position, dt);
     input.endFrame();
   });
 

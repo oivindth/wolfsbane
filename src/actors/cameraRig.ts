@@ -51,7 +51,7 @@ export class CameraRig {
     return Math.atan2(this.directionScratch.x, this.directionScratch.z);
   }
 
-  follow(position: Vector3): void {
+  follow(position: Vector3, dt: number): void {
     this.camera.target.copyFrom(position);
     this.camera.target.y += 1.2;
     if (this.lockTarget) {
@@ -59,7 +59,6 @@ export class CameraRig {
       const dx = position.x - this.lockTarget.x;
       const dz = position.z - this.lockTarget.z;
       const desiredAlpha = Math.atan2(dz, dx);
-      const dt = this.scene.getEngine().getDeltaTime() / 1000;
       this.camera.alpha = lerpAngle(
         this.camera.alpha,
         desiredAlpha,

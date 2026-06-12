@@ -901,11 +901,16 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { MASK_WORLD } from "../core/collisionMasks";
+import { lerpAngle } from "./movement";
+
+const LOCK_STEER_RATE = 5;
 
 const COLLISION_MARGIN = 0.3;
 
 export class CameraRig {
   readonly camera: ArcRotateCamera;
+  /** Point the camera keeps centered while locked on; null = free camera. */
+  lockTarget: Vector3 | null = null;
   private readonly directionScratch = new Vector3();
   private readonly rayEndScratch = new Vector3();
   private readonly raycastResult = new PhysicsRaycastResult();
@@ -934,13 +939,27 @@ export class CameraRig {
 
   /** World yaw of the camera's view direction (left-handed, +Z = 0). */
   get yaw(): number {
-    this.camera.target.subtractToRef(this.camera.position, this.directionScratch);
+    this.camera.target.subtractToRef(
+      this.camera.position,
+      this.directionScratch,
+    );
     return Math.atan2(this.directionScratch.x, this.directionScratch.z);
   }
 
-  follow(position: Vector3): void {
+  follow(position: Vector3, dt: number): void {
     this.camera.target.copyFrom(position);
     this.camera.target.y += 1.2;
+    if (this.lockTarget) {
+      // Ease the camera to sit behind the player relative to the target.
+      const dx = position.x - this.lockTarget.x;
+      const dz = position.z - this.lockTarget.z;
+      const desiredAlpha = Math.atan2(dz, dx);
+      this.camera.alpha = lerpAngle(
+        this.camera.alpha,
+        desiredAlpha,
+        LOCK_STEER_RATE * dt,
+      );
+    }
     this.updateCollision();
   }
 
@@ -952,23 +971,39 @@ export class CameraRig {
     if (!this.clamped) {
       this.desiredRadius = this.camera.radius;
     }
-    this.camera.position.subtractToRef(this.camera.target, this.directionScratch);
+    this.camera.position.subtractToRef(
+      this.camera.target,
+      this.directionScratch,
+    );
     this.directionScratch.normalize();
     this.rayEndScratch.copyFrom(this.camera.target);
-    this.directionScratch.scaleAndAddToRef(this.desiredRadius, this.rayEndScratch);
-    physics.raycastToRef(this.camera.target, this.rayEndScratch, this.raycastResult, {
-      collideWith: MASK_WORLD,
-    });
+    this.directionScratch.scaleAndAddToRef(
+      this.desiredRadius,
+      this.rayEndScratch,
+    );
+    physics.raycastToRef(
+      this.camera.target,
+      this.rayEndScratch,
+      this.raycastResult,
+      {
+        collideWith: MASK_WORLD,
+      },
+    );
     if (this.raycastResult.hasHit) {
-      this.raycastResult.hitPointWorld.subtractToRef(this.camera.target, this.directionScratch);
+      // reuse directionScratch as the hit-distance vector after the raycast
+      this.raycastResult.hitPointWorld.subtractToRef(
+        this.camera.target,
+        this.directionScratch,
+      );
       const distance = this.directionScratch.length();
-      this.camera.radius = Math.max(distance - COLLISION_MARGIN, this.camera.lowerRadiusLimit ?? 1);
+      this.camera.radius = Math.max(
+        distance - COLLISION_MARGIN,
+        this.camera.lowerRadiusLimit ?? 1,
+      );
       this.clamped = true;
-    } else {
-      if (this.clamped) {
-        this.camera.radius = this.desiredRadius;
-        this.clamped = false;
-      }
+    } else if (this.clamped) {
+      this.camera.radius = this.desiredRadius;
+      this.clamped = false;
     }
   }
 
@@ -1004,7 +1039,10 @@ A lockable training dummy stands in the zone. Tab toggles lock-on: the camera ea
 
 ```ts
 export interface TestZone {
-  /** Lock-on target for phase 2; replaced by real enemies in phase 3. */
+  /**
+   * Lock-on target for phase 2; replaced by real enemies in phase 3.
+   * Do not mutate — this IS the dummy mesh's position vector.
+   */
   dummyPosition: Vector3;
 }
 
@@ -1033,7 +1071,7 @@ const LOCK_STEER_RATE = 5;
   /** Point the camera keeps centered while locked on; null = free camera. */
   lockTarget: Vector3 | null = null;
 
-  follow(position: Vector3): void {
+  follow(position: Vector3, dt: number): void {
     this.camera.target.copyFrom(position);
     this.camera.target.y += 1.2;
     if (this.lockTarget) {
@@ -1041,7 +1079,6 @@ const LOCK_STEER_RATE = 5;
       const dx = position.x - this.lockTarget.x;
       const dz = position.z - this.lockTarget.z;
       const desiredAlpha = Math.atan2(dz, dx);
-      const dt = this.scene.getEngine().getDeltaTime() / 1000;
       this.camera.alpha = lerpAngle(this.camera.alpha, desiredAlpha, LOCK_STEER_RATE * dt);
     }
     this.updateCollision();
@@ -1058,6 +1095,8 @@ const LOCK_STEER_RATE = 5;
       cameraRig.lockTarget = locked ? null : zone.dummyPosition;
       player.lockTarget = locked ? null : zone.dummyPosition;
     }
+    player.update(dt);
+    cameraRig.follow(player.position, dt);
 ```
 
 - [ ] **Step 4: Verify** — `pnpm test && pnpm check` green. Browser: press Tab near the red dummy — camera swings behind the Knight facing the dummy; A/D now strafe (strafe clips), S backpedals (Walking_Backwards); Tab again releases. Camera still collides with boxes while locked. Kill the server.

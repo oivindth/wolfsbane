@@ -13,7 +13,10 @@ import {
 import { MASK_WORLD } from "../core/collisionMasks";
 
 export interface TestZone {
-  /** Lock-on target for phase 2; replaced by real enemies in phase 3. */
+  /**
+   * Lock-on target for phase 2; replaced by real enemies in phase 3.
+   * Do not mutate — this IS the dummy mesh's position vector.
+   */
   dummyPosition: Vector3;
 }
 
