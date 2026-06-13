@@ -6,9 +6,13 @@ export type Action =
   | "sprint"
   | "roll"
   | "attack"
+  | "heavy"
+  | "castSign"
+  | "sign1"
+  | "sign2"
+  | "sign3"
   | "lockToggle"
-  | "debugHit"
-  | "debugDeath";
+  | "respawn";
 
 const DEFAULT_BINDINGS: Readonly<Record<string, Action>> = {
   KeyW: "forward",
@@ -23,9 +27,13 @@ const DEFAULT_BINDINGS: Readonly<Record<string, Action>> = {
   ShiftRight: "sprint",
   Space: "roll",
   KeyF: "attack",
+  KeyR: "heavy",
+  KeyQ: "castSign",
+  Digit1: "sign1",
+  Digit2: "sign2",
+  Digit3: "sign3",
   Tab: "lockToggle",
-  KeyH: "debugHit",
-  KeyK: "debugDeath",
+  Enter: "respawn",
 };
 
 export class Input {

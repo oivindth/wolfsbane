@@ -65,18 +65,30 @@ describe("Input", () => {
     expect(input.isDown("back")).toBe(false);
   });
 
-  it("maps trigger keys to new actions", () => {
+  it("maps combat keys to actions", () => {
     const input = new Input();
     for (const [code, action] of [
       ["Space", "roll"],
       ["KeyF", "attack"],
+      ["KeyR", "heavy"],
+      ["KeyQ", "castSign"],
+      ["Digit1", "sign1"],
+      ["Digit2", "sign2"],
+      ["Digit3", "sign3"],
       ["Tab", "lockToggle"],
-      ["KeyH", "debugHit"],
-      ["KeyK", "debugDeath"],
+      ["Enter", "respawn"],
     ] as const) {
       input.handleKey(code, true);
       expect(input.isDown(action)).toBe(true);
     }
+  });
+
+  it("no longer binds the removed debug keys", () => {
+    const input = new Input();
+    input.handleKey("KeyH", true);
+    input.handleKey("KeyK", true);
+    expect(input.justPressed("attack")).toBe(false);
+    expect(input.isDown("attack")).toBe(false);
   });
 
   it("reports justPressed only until endFrame", () => {
