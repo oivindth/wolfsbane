@@ -22,7 +22,6 @@ import { AnimationController } from "./animationController";
 import {
   AnimStateMachine,
   isMeleeState,
-  type OneShotState,
   selectLocomotion,
 } from "./animationStates";
 import type { CameraRig } from "./cameraRig";
@@ -286,7 +285,7 @@ export class Player {
       this.sequencer.cancel();
       return;
     }
-    if (!this.stateMachine.trigger(spec.state as OneShotState)) {
+    if (!this.stateMachine.trigger(spec.state)) {
       // Should not happen given the guards; keep sequencer and anims in sync.
       this.sequencer.cancel();
     }
@@ -317,7 +316,7 @@ export class Player {
       this.sequencer.cancel();
       return;
     }
-    if (!this.stateMachine.trigger(spec.state as OneShotState)) {
+    if (!this.stateMachine.trigger(spec.state)) {
       this.sequencer.cancel();
     }
   }

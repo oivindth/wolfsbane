@@ -1,10 +1,10 @@
-import type { AnimState } from "../actors/animationStates";
+import type { OneShotState } from "../actors/animationStates";
 
 export type MeleeKind = "light1" | "light2" | "light3" | "heavy";
 
 export interface MeleeAttackSpec {
-  /** Animation state this attack plays. */
-  state: AnimState;
+  /** Animation state this attack plays (always a one-shot, so it can drive trigger()). */
+  state: OneShotState;
   damage: number;
   staminaCost: number;
   /** Real seconds into the swing when damage lands (clip speed already applied). */
