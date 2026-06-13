@@ -1,6 +1,6 @@
 import { CameraRig } from "../actors/cameraRig";
 import { Player } from "../actors/playerController";
-import { hud } from "../ui/hudStore";
+import { hud } from "../ui/hudStore.svelte";
 import { buildTestZone } from "../world/testZone";
 import { createEngine } from "./engine";
 import { events } from "./events";

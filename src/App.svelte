@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { type Game, startGame } from "./core/game";
-  import { hud } from "./ui/hudStore";
+  import { hud } from "./ui/hudStore.svelte";
   import Hud from "./ui/Hud.svelte";
 
   let canvas: HTMLCanvasElement | undefined = $state();

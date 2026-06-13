@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { hud } from "./hudStore";
+  import { hud } from "./hudStore.svelte";
 
   const signs = [
     { kind: "igni", label: "Igni", key: "1" },
