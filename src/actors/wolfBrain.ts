@@ -40,13 +40,15 @@ const ATTACK_DURATION = 1.33;
 const RECOVER_SECONDS = 1.0;
 const STAGGER_SECONDS = 1.7;
 
-const IDLE_TICK: WolfTick = {
+// Frozen: returned by reference on the zero-velocity paths, so a stray
+// mutation by a consumer must not corrupt every later tick.
+const IDLE_TICK: WolfTick = Object.freeze({
   velX: 0,
   velZ: 0,
   gait: "idle",
   attackStarted: false,
   bite: false,
-};
+});
 
 /**
  * Wolf combat FSM: idle → chase → circle → attack → recover (→ chase).
