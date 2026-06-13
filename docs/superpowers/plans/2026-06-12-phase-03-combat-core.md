@@ -1304,7 +1304,11 @@ const WALK_SPEED = 1.8;
 const BITE_AT = 0.55;
 const ATTACK_DURATION = 1.33;
 const RECOVER_SECONDS = 1.0;
-const STAGGER_SECONDS = 1.5;
+// 1.7 (not 1.5): the stagger test ticks 17×0.1s and asserts the wolf is
+// back in "chase" on the final tick. A shorter stagger expires early and the
+// wolf flips chase→circle (dist 2 < 3.5) before the assertion. Valid range
+// is (1.6, 1.7]; 1.7 lands the recovery on the last tick.
+const STAGGER_SECONDS = 1.7;
 
 const IDLE_TICK: WolfTick = {
   velX: 0,
