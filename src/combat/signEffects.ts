@@ -28,11 +28,9 @@ function makeParticleTexture(scene: Scene): DynamicTexture {
 
 /** Fire-and-forget particle bursts for Igni/Aard and the Quen bubble. */
 export class SignEffects {
-  private texture: DynamicTexture;
   private quenSphere: Mesh;
 
   constructor(private scene: Scene) {
-    this.texture = makeParticleTexture(scene);
     this.quenSphere = MeshBuilder.CreateSphere(
       "quenShield",
       { diameter: 2.4, segments: 12 },
@@ -85,7 +83,10 @@ export class SignEffects {
 
   private makeBurst(name: string, capacity: number): ParticleSystem {
     const ps = new ParticleSystem(name, capacity, this.scene);
-    ps.particleTexture = this.texture;
+    // Each burst owns its texture so disposeOnStop's dispose() can free it.
+    // (A shared texture would be freed by the first burst's self-dispose and
+    // break later casts, since dispose() defaults to disposeTexture=true.)
+    ps.particleTexture = makeParticleTexture(this.scene);
     ps.blendMode = ParticleSystem.BLENDMODE_ONEONE;
     ps.minSize = 0.15;
     ps.maxSize = 0.5;
@@ -95,12 +96,14 @@ export class SignEffects {
     ps.maxEmitPower = 1.5;
     ps.updateSpeed = 0.016;
     ps.targetStopDuration = 0.3;
-    ps.disposeOnStop = true; // fire-and-forget: no manual cleanup needed
+    // Fire-and-forget: Babylon defers disposal until all particles die, then
+    // frees the system and its (per-burst) texture. No manual cleanup needed.
+    ps.disposeOnStop = true;
     return ps;
   }
 
   dispose(): void {
+    this.quenSphere.material?.dispose();
     this.quenSphere.dispose();
-    this.texture.dispose();
   }
 }

@@ -2257,7 +2257,6 @@ import {
   ParticleSystem,
   type Scene,
   StandardMaterial,
-  type Texture,
   Vector3,
 } from "@babylonjs/core";
 
@@ -2279,11 +2278,9 @@ function makeParticleTexture(scene: Scene): DynamicTexture {
 
 /** Fire-and-forget particle bursts for Igni/Aard and the Quen bubble. */
 export class SignEffects {
-  private texture: DynamicTexture;
   private quenSphere: Mesh;
 
   constructor(private scene: Scene) {
-    this.texture = makeParticleTexture(scene);
     this.quenSphere = MeshBuilder.CreateSphere(
       "quenShield",
       { diameter: 2.4, segments: 12 },
@@ -2336,7 +2333,10 @@ export class SignEffects {
 
   private makeBurst(name: string, capacity: number): ParticleSystem {
     const ps = new ParticleSystem(name, capacity, this.scene);
-    ps.particleTexture = this.texture;
+    // Own texture per burst: disposeOnStop calls dispose() with the default
+    // disposeTexture=true, so a shared texture would be freed after the first
+    // burst and break later casts. Per-cast cost is negligible (casts seconds apart).
+    ps.particleTexture = makeParticleTexture(this.scene);
     ps.blendMode = ParticleSystem.BLENDMODE_ONEONE;
     ps.minSize = 0.15;
     ps.maxSize = 0.5;
@@ -2346,18 +2346,18 @@ export class SignEffects {
     ps.maxEmitPower = 1.5;
     ps.updateSpeed = 0.016;
     ps.targetStopDuration = 0.3;
-    ps.disposeOnStop = true; // fire-and-forget: no manual cleanup needed
+    ps.disposeOnStop = true; // fire-and-forget; disposes after particles die
     return ps;
   }
 
   dispose(): void {
+    this.quenSphere.material?.dispose();
     this.quenSphere.dispose();
-    this.texture.dispose();
   }
 }
 ```
 
-(Note: `disposeOnStop` systems clean themselves up; the shared `texture` outlives them and is disposed here. Babylon does not dispose a particle system's texture on system dispose by default — exactly what we want for the shared texture.)
+(Note: `disposeOnStop` systems clean themselves up — Babylon waits until every particle has died, then disposes the system AND its texture. Each burst therefore owns its own texture; a shared one would be freed by the first burst. Only the long-lived Quen sphere + material need explicit disposal here.)
 
 - [ ] **Step 2: Verify it compiles and lints**
 
