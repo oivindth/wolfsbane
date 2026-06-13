@@ -13,11 +13,8 @@ import {
 import { MASK_WORLD } from "../core/collisionMasks";
 
 export interface TestZone {
-  /**
-   * Lock-on target for phase 2; replaced by real enemies in phase 3.
-   * Do not mutate — this IS the dummy mesh's position vector.
-   */
-  dummyPosition: Vector3;
+  /** Capsule-center spawn positions for the wolf pack. */
+  wolfSpawns: Vector3[];
 }
 
 /** Placeholder zone: lit ground plane with obstacle boxes. Replaced in phase 4. */
@@ -64,15 +61,11 @@ export function buildTestZone(scene: Scene): TestZone {
     boxPhysics.shape.filterMembershipMask = MASK_WORLD;
   }
 
-  const dummy = MeshBuilder.CreateCapsule(
-    "trainingDummy",
-    { height: 1.8, radius: 0.4 },
-    scene,
-  );
-  const dummyMat = new StandardMaterial("dummyMat", scene);
-  dummyMat.diffuseColor = new Color3(0.7, 0.25, 0.2);
-  dummy.material = dummyMat;
-  dummy.position = new Vector3(4, 0.9, -4);
-
-  return { dummyPosition: dummy.position };
+  return {
+    wolfSpawns: [
+      new Vector3(10, 1, 10),
+      new Vector3(-12, 1, 6),
+      new Vector3(8, 1, -14),
+    ],
+  };
 }
