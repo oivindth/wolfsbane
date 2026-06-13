@@ -4,6 +4,9 @@
  */
 export interface GameEvents extends Record<string, unknown> {
   "game:started": Record<string, never>;
+  /** A wolf (or future enemy) died. Consumed by quests/XP in later phases. */
+  "enemy:killed": { id: string };
+  "player:died": Record<string, never>;
 }
 
 type Handler = (payload: unknown) => void;
