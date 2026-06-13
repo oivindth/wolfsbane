@@ -12,6 +12,10 @@ const ALL_STATES: AnimState[] = [
   "fall",
   "roll",
   "attack",
+  "attack2",
+  "attack3",
+  "heavy",
+  "cast",
   "hit",
   "death",
 ];
@@ -28,5 +32,7 @@ describe("KNIGHT_CLIPS", () => {
     expect(KNIGHT_CLIPS.run.loop).toBe(true);
     expect(KNIGHT_CLIPS.roll.loop).toBe(false);
     expect(KNIGHT_CLIPS.death.loop).toBe(false);
+    expect(KNIGHT_CLIPS.heavy.loop).toBe(false);
+    expect(KNIGHT_CLIPS.cast.loop).toBe(false);
   });
 });

@@ -6,8 +6,34 @@ export type LocomotionState =
   | "strafeRight"
   | "run"
   | "fall";
-export type OneShotState = "roll" | "attack" | "hit" | "death";
+export type OneShotState =
+  | "roll"
+  | "attack"
+  | "attack2"
+  | "attack3"
+  | "heavy"
+  | "cast"
+  | "hit"
+  | "death";
 export type AnimState = LocomotionState | OneShotState;
+
+const HIT_INTERRUPTS: ReadonlySet<OneShotState> = new Set([
+  "attack",
+  "attack2",
+  "attack3",
+  "heavy",
+  "cast",
+]);
+
+/** True for states that swing a weapon (cast and roll are not melee). */
+export function isMeleeState(state: AnimState): boolean {
+  return (
+    state === "attack" ||
+    state === "attack2" ||
+    state === "attack3" ||
+    state === "heavy"
+  );
+}
 
 export interface LocomotionInput {
   /** Horizontal speed in m/s. */
@@ -57,7 +83,11 @@ export class AnimStateMachine {
       this.current = state;
       return true;
     }
-    if (state === "hit" && this.oneShot === "attack") {
+    if (
+      state === "hit" &&
+      this.oneShot !== null &&
+      HIT_INTERRUPTS.has(this.oneShot)
+    ) {
       this.oneShot = "hit";
       this.current = "hit";
       return true;
@@ -73,5 +103,11 @@ export class AnimStateMachine {
   setLocomotion(state: LocomotionState): void {
     if (this.oneShot !== null || this.isDead) return;
     this.current = state;
+  }
+
+  /** Back to idle from any state, including death (used on respawn). */
+  reset(): void {
+    this.current = "idle";
+    this.oneShot = null;
   }
 }
