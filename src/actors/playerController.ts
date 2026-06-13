@@ -146,6 +146,7 @@ export class Player {
     this.quen.clear();
     this.sequencer.cancel();
     this.pendingSign = null;
+    this.castElapsed = 0;
     this.stateMachine.reset();
     this.controller.setPosition(position);
     this.mesh.position.copyFrom(position);

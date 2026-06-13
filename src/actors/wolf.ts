@@ -115,7 +115,12 @@ export class Wolf {
         playerDead,
         dt,
       });
-      if (tick.attackStarted) this.stateMachine.trigger("attack");
+      if (tick.attackStarted && !this.stateMachine.trigger("attack")) {
+        // The flinch (or another one-shot) owns the animation slot, so the
+        // lunge can't play. Abort it in the brain too, otherwise the bite
+        // would still land with no visible wind-up.
+        this.brain.interrupt();
+      }
       if (tick.bite) this.onBite?.();
 
       // The flinch animation roots the wolf in place.
