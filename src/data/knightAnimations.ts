@@ -18,6 +18,14 @@ export const KNIGHT_CLIPS: Record<AnimState, ClipConfig> = {
   fall: { clip: "Jump_Idle", loop: true, speed: 1 },
   roll: { clip: "Dodge_Forward", loop: false, speed: 1.3 },
   attack: { clip: "1H_Melee_Attack_Slice_Diagonal", loop: false, speed: 1.2 },
+  attack2: {
+    clip: "1H_Melee_Attack_Slice_Horizontal",
+    loop: false,
+    speed: 1.2,
+  },
+  attack3: { clip: "1H_Melee_Attack_Stab", loop: false, speed: 1.2 },
+  heavy: { clip: "1H_Melee_Attack_Chop", loop: false, speed: 1 },
+  cast: { clip: "Spellcast_Shoot", loop: false, speed: 1.2 },
   hit: { clip: "Hit_A", loop: false, speed: 1 },
   death: { clip: "Death_A", loop: false, speed: 1 },
 };

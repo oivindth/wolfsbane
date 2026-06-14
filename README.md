@@ -11,12 +11,15 @@ GitHub Actions (runs tests + checks, then publishes the Vite build).
 | Input | Action |
 |---|---|
 | WASD / arrows | Move (camera-relative) |
-| Shift | Sprint |
-| Space | Dodge roll |
-| F | Attack |
-| Tab | Lock-on toggle (training dummy) |
+| Shift | Sprint (drains stamina) |
+| Space | Dodge roll (i-frames) |
+| F | Light attack (3-hit combo) |
+| R | Heavy attack |
+| Q | Cast selected sign |
+| 1 / 2 / 3 | Select Igni / Aard / Quen |
+| Tab | Lock-on to nearest wolf |
+| Enter | Respawn after death |
 | Mouse drag / wheel | Orbit / zoom camera |
-| H / K | Debug: flinch / die (dev builds only; removed in phase 3) |
 
 ## Develop
 

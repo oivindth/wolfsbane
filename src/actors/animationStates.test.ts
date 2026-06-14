@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { AnimStateMachine, selectLocomotion } from "./animationStates";
+import {
+  AnimStateMachine,
+  isMeleeState,
+  selectLocomotion,
+} from "./animationStates";
 
 describe("selectLocomotion", () => {
   it("is idle when grounded and not moving", () => {
@@ -157,5 +161,56 @@ describe("AnimStateMachine", () => {
     sm.trigger("attack");
     expect(sm.trigger("attack")).toBe(false);
     expect(sm.current).toBe("attack");
+  });
+});
+
+describe("AnimStateMachine combat extensions", () => {
+  it("hit interrupts every melee attack and cast, but not roll", () => {
+    for (const state of [
+      "attack",
+      "attack2",
+      "attack3",
+      "heavy",
+      "cast",
+    ] as const) {
+      const sm = new AnimStateMachine();
+      sm.trigger(state);
+      expect(sm.trigger("hit")).toBe(true);
+      expect(sm.current).toBe("hit");
+    }
+    const rolling = new AnimStateMachine();
+    rolling.trigger("roll");
+    expect(rolling.trigger("hit")).toBe(false);
+    expect(rolling.current).toBe("roll");
+  });
+
+  it("chained attacks start after the previous one ends", () => {
+    const sm = new AnimStateMachine();
+    sm.trigger("attack");
+    expect(sm.trigger("attack2")).toBe(false); // still mid-swing
+    sm.onOneShotEnd();
+    expect(sm.trigger("attack2")).toBe(true);
+    expect(sm.current).toBe("attack2");
+  });
+
+  it("reset returns an active or dead machine to idle", () => {
+    const sm = new AnimStateMachine();
+    sm.trigger("death");
+    sm.reset();
+    expect(sm.current).toBe("idle");
+    expect(sm.isDead).toBe(false);
+    expect(sm.trigger("attack")).toBe(true);
+  });
+});
+
+describe("isMeleeState", () => {
+  it("identifies melee attack states only", () => {
+    expect(isMeleeState("attack")).toBe(true);
+    expect(isMeleeState("attack2")).toBe(true);
+    expect(isMeleeState("attack3")).toBe(true);
+    expect(isMeleeState("heavy")).toBe(true);
+    expect(isMeleeState("cast")).toBe(false);
+    expect(isMeleeState("roll")).toBe(false);
+    expect(isMeleeState("idle")).toBe(false);
   });
 });

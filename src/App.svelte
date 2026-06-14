@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { type Game, startGame } from "./core/game";
-  import { hud } from "./ui/hud.svelte";
+  import { hud } from "./ui/hudStore.svelte";
+  import Hud from "./ui/Hud.svelte";
 
   let canvas: HTMLCanvasElement | undefined = $state();
   let bootError: string | undefined = $state();
@@ -33,6 +34,7 @@
 <canvas bind:this={canvas} id="game-canvas"></canvas>
 <div id="overlay-root">
   <div class="fps">{Math.round(hud.fps)} FPS</div>
+  <Hud />
   {#if bootError}
     <div class="boot-error" role="alert">Failed to start: {bootError}</div>
   {/if}
